@@ -1,17 +1,3 @@
-diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
-index a7e0d9f6..d0263cf5 100644
---- a/arch/arm/dts/Makefile
-+++ b/arch/arm/dts/Makefile
-@@ -161,7 +161,8 @@ dtb-$(CONFIG_ROCKCHIP_RK3399) += \
- 	rk3399-rock-pi-4c.dtb \
- 	rk3399-rock960.dtb \
- 	rk3399-rockpro64.dtb \
--	rk3399pro-rock-pi-n10.dtb
-+	rk3399pro-rock-pi-n10.dtb \
-+	rk3399-rp-king3399.dtb
- 
- dtb-$(CONFIG_ROCKCHIP_RK3568) += \
- 	rk3568-evb.dtb
 diff --git a/arch/arm/dts/rk3399-rp-king3399-u-boot.dtsi b/arch/arm/dts/rk3399-rp-king3399-u-boot.dtsi
 new file mode 100644
 index 00000000..e7688a82

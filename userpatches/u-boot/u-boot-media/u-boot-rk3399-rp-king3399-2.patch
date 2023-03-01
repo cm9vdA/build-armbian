@@ -1,0 +1,14 @@
+diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
+index a36b0a71..f1e5ec72 100644
+--- a/arch/arm/dts/Makefile
++++ b/arch/arm/dts/Makefile
+@@ -167,7 +167,8 @@ dtb-$(CONFIG_ROCKCHIP_RK3399) += \
+ 	rk3399-rock960.dtb \
+ 	rk3399-rockpro64.dtb \
+ 	rk3399-tinker-2.dtb \
+-	rk3399pro-rock-pi-n10.dtb
++	rk3399pro-rock-pi-n10.dtb \
++	rk3399-rp-king3399.dtb
+ 
+ dtb-$(CONFIG_ROCKCHIP_RK3568) += \
+ 	rk3568-evb.dtb
