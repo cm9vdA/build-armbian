@@ -18,3 +18,8 @@ apt-mark hold linux-u-boot-${BOARD}-*
 sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 sed -i 's|security.debian.org|mirrors.ustc.edu.cn/debian-security|g' /etc/apt/sources.list
 sed -i 's|apt.armbian.com|mirrors.ustc.edu.cn/armbian|g' /etc/apt/sources.list.d/armbian.list
+
+# ZCube1 Max no have WiFi
+if [ "${BOARD}" = "zcube1-max" ]; then
+    systemctl disable wpa_supplicant.service
+fi
