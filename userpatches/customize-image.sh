@@ -19,6 +19,9 @@ sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 sed -i 's|security.debian.org|mirrors.ustc.edu.cn/debian-security|g' /etc/apt/sources.list
 sed -i 's|apt.armbian.com|mirrors.ustc.edu.cn/armbian|g' /etc/apt/sources.list.d/armbian.list
 
+# modprobe.d
+echo i2c_dev > /etc/modprobe.d/i2c_dev.conf
+
 # ZCube1 Max no have WiFi
 if [ "${BOARD}" = "zcube1-max" ]; then
     systemctl disable wpa_supplicant.service
