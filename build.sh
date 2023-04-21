@@ -29,7 +29,7 @@ build_image() {
     fi
 
     cd ${WORKSPACE}
-    echo ./compile.sh docker BOARD=${BOARD} \
+    ./compile.sh docker BOARD=${BOARD} \
         BRANCH=${BRANCH} \
         RELEASE=${RELEASE} \
         BUILD_MINIMAL=${BUILD_MINIMAL} \
