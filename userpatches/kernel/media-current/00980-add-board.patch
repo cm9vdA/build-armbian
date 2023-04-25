@@ -1,7 +1,7 @@
 diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
 --- a/arch/arm64/boot/dts/rockchip/Makefile
 +++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -72,3 +72,8 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-soquartz-cm4.dtb
+@@ -72,3 +72,9 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-soquartz-cm4.dtb
  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-bpi-r2-pro.dtb
  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-evb1-v10.dtb
  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-rock-3a.dtb
@@ -10,3 +10,4 @@ diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchi
 +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-tn3399-v3.dtb
 +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-lx-r3s.dtb
 +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-tvi3315a.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-zysj.dtb
