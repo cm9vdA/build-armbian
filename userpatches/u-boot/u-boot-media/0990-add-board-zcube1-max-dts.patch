@@ -109,7 +109,7 @@ diff --git a/arch/arm/dts/rk3399-zcube1-max.dts b/arch/arm/dts/rk3399-zcube1-max
 new file mode 100644
 --- /dev/null
 +++ b/arch/arm/dts/rk3399-zcube1-max.dts
-@@ -0,0 +1,911 @@
+@@ -0,0 +1,920 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/dts-v1/;
 +#include <dt-bindings/pwm/pwm.h>
@@ -137,13 +137,6 @@ new file mode 100644
 +		clock-output-names = "clkin_gmac";
 +		#clock-cells = <0>;
 +	};
-+
-+ // ir-receiver {
-+ // 	compatible = "gpio-ir-receiver";
-+ // 	gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_LOW>;
-+ // 	pinctrl-names = "default";
-+ // 	pinctrl-0 = <&ir_rx>;
-+ // };
 +
 +	gpio-keys {
 +		compatible = "gpio-keys";
@@ -314,6 +307,17 @@ new file mode 100644
 +		enable-gpios = <&gpio1 RK_PA0 GPIO_ACTIVE_LOW>;
 +		sound-name-prefix = "Speaker Amp";
 +		VCC-supply = <&vcc5v0_sys>;
++	};
++
++	// UART4: RX -> SDA, TX -> SCL
++	i2c9 {
++		compatible = "i2c-gpio";
++		sda-gpios = <&gpio1 RK_PA7 GPIO_ACTIVE_HIGH>;
++		scl-gpios = <&gpio1 RK_PB0 GPIO_ACTIVE_HIGH>;
++		i2c-gpio,delay-us = <5>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		status = "disabled";
 +	};
 +};
 +
@@ -968,8 +972,13 @@ new file mode 100644
 +	};
 +};
 +
++// Debug TTL
 +&uart2 {
 +	status = "okay";
++};
++
++&uart4 {
++	// status = "okay";
 +};
 +
 +&usb_host0_ehci {
