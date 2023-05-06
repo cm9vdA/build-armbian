@@ -91,7 +91,7 @@ diff --git a/arch/arm/dts/rk3399-tvi3315a-u-boot.dtsi b/arch/arm/dts/rk3399-tvi3
 new file mode 100644
 --- /dev/null
 +++ b/arch/arm/dts/rk3399-tvi3315a-u-boot.dtsi
-@@ -0,0 +1,13 @@
+@@ -0,0 +1,17 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2019 Jagan Teki <jagan@amarulasolutions.com>
@@ -104,6 +104,10 @@ new file mode 100644
 +	chosen {
 +		u-boot,spl-boot-order = "same-as-spl", &sdhci, &sdmmc;
 +	};
++};
++
++&vdd_log {
++	regulator-init-microvolt = <950000>;
 +};
 diff --git a/arch/arm/dts/rk3399-tvi3315a.dts b/arch/arm/dts/rk3399-tvi3315a.dts
 new file mode 100644
