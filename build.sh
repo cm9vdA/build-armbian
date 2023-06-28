@@ -3,12 +3,12 @@
 set -e
 WORKSPACE=$(dirname $(readlink -f $0))
 
-BOARD_LIST=(king3399 lx-r3s tn3399-v3 tvi3315a zcube1-max zysj)
+BOARD_LIST=(all tn3399-v3 tvi3315a zcube1-max)
 
 # default value
 BOARD=$1
 BRANCH=current
-RELEASE=bullseye
+RELEASE=bookworm
 BUILD_MINIMAL=no
 BUILD_DESKTOP=no
 KERNEL_ONLY=no
@@ -18,6 +18,7 @@ BOOT_LOGO=no
 
 build_image() {
     local exists=0
+    local i
     for i in ${BOARD_LIST[@]}; do
         if [ "${i}" = "${BOARD}" ]; then
             exists=1
@@ -29,15 +30,32 @@ build_image() {
     fi
 
     cd ${WORKSPACE}
-    ./compile.sh docker BOARD=${BOARD} \
-        BRANCH=${BRANCH} \
-        RELEASE=${RELEASE} \
-        BUILD_MINIMAL=${BUILD_MINIMAL} \
-        BUILD_DESKTOP=${BUILD_DESKTOP} \
-        KERNEL_ONLY=${KERNEL_ONLY} \
-        KERNEL_CONFIGURE=${KERNEL_CONFIGURE} \
-        COMPRESS_OUTPUTIMAGE=${COMPRESS_OUTPUTIMAGE} \
-        BOOT_LOGO=${BOOT_LOGO}
+    if [ "${BOARD}" == "all" ]; then
+        for ((i = 1; i < ${#BOARD_LIST[@]}; i++)); do
+            ./compile.sh docker BOARD=${BOARD_LIST[i]} \
+                BRANCH=${BRANCH} \
+                RELEASE=${RELEASE} \
+                BUILD_MINIMAL=${BUILD_MINIMAL} \
+                BUILD_DESKTOP=${BUILD_DESKTOP} \
+                KERNEL_ONLY=${KERNEL_ONLY} \
+                KERNEL_CONFIGURE=${KERNEL_CONFIGURE} \
+                COMPRESS_OUTPUTIMAGE=${COMPRESS_OUTPUTIMAGE} \
+                BOOT_LOGO=${BOOT_LOGO}
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        done
+    else
+        ./compile.sh docker BOARD=${BOARD} \
+            BRANCH=${BRANCH} \
+            RELEASE=${RELEASE} \
+            BUILD_MINIMAL=${BUILD_MINIMAL} \
+            BUILD_DESKTOP=${BUILD_DESKTOP} \
+            KERNEL_ONLY=${KERNEL_ONLY} \
+            KERNEL_CONFIGURE=${KERNEL_CONFIGURE} \
+            COMPRESS_OUTPUTIMAGE=${COMPRESS_OUTPUTIMAGE} \
+            BOOT_LOGO=${BOOT_LOGO}
+    fi
 }
 
 if [ -n "${BOARD}" ]; then
