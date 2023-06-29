@@ -32,7 +32,6 @@ show_cpu_usage=1
 show_cpu_frequency=1
 show_cpu_temperature=1
 tree_view=1
-highlight_threads=0
 
 EOF
 
