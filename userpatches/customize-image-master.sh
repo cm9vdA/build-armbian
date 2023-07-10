@@ -23,7 +23,7 @@ sed -i 's|security.debian.org|mirrors.ustc.edu.cn/debian-security|g' /etc/apt/so
 sed -i 's|apt.armbian.com|mirrors.ustc.edu.cn/armbian|g' /etc/apt/sources.list.d/armbian.list
 
 # modules-load.d
-echo i2c_dev > /etc/modules-load.d/i2c_dev.conf
+# echo i2c_dev > /etc/modules-load.d/i2c_dev.conf
 
 # htoprc
 mkdir -p /etc/skel/.config/htop

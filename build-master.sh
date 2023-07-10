@@ -16,6 +16,9 @@ KERNEL_CONFIGURE=no
 COMPRESS_OUTPUTIMAGE=sha,gz
 BOOT_LOGO=no
 
+git switch master
+ln -nrfs userpatches/customize-image-master.sh userpatches/customize-image.sh
+
 build_image() {
     local exists=0
     local i
