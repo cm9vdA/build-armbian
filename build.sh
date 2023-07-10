@@ -11,13 +11,12 @@ BRANCH=current
 RELEASE=bookworm
 BUILD_MINIMAL=no
 BUILD_DESKTOP=no
-KERNEL_ONLY=no
 KERNEL_CONFIGURE=no
-COMPRESS_OUTPUTIMAGE=sha,gz
+COMPRESS_OUTPUTIMAGE=sha,xz
 BOOT_LOGO=no
+# GIT_BRANCH=$(git branch --show-current)
 
-git switch master
-ln -nrfs userpatches/customize-image-master.sh userpatches/customize-image.sh
+git switch main
 
 build_image() {
     local exists=0
@@ -35,12 +34,11 @@ build_image() {
     cd ${WORKSPACE}
     if [ "${BOARD}" == "all" ]; then
         for ((i = 1; i < ${#BOARD_LIST[@]}; i++)); do
-            ./compile.sh docker BOARD=${BOARD_LIST[i]} \
+            ./compile.sh BOARD=${BOARD_LIST[i]} \
                 BRANCH=${BRANCH} \
                 RELEASE=${RELEASE} \
                 BUILD_MINIMAL=${BUILD_MINIMAL} \
                 BUILD_DESKTOP=${BUILD_DESKTOP} \
-                KERNEL_ONLY=${KERNEL_ONLY} \
                 KERNEL_CONFIGURE=${KERNEL_CONFIGURE} \
                 COMPRESS_OUTPUTIMAGE=${COMPRESS_OUTPUTIMAGE} \
                 BOOT_LOGO=${BOOT_LOGO}
@@ -49,12 +47,11 @@ build_image() {
             fi
         done
     else
-        ./compile.sh docker BOARD=${BOARD} \
+        ./compile.sh BOARD=${BOARD} \
             BRANCH=${BRANCH} \
             RELEASE=${RELEASE} \
             BUILD_MINIMAL=${BUILD_MINIMAL} \
             BUILD_DESKTOP=${BUILD_DESKTOP} \
-            KERNEL_ONLY=${KERNEL_ONLY} \
             KERNEL_CONFIGURE=${KERNEL_CONFIGURE} \
             COMPRESS_OUTPUTIMAGE=${COMPRESS_OUTPUTIMAGE} \
             BOOT_LOGO=${BOOT_LOGO}
