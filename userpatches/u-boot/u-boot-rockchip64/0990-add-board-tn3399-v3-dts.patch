@@ -112,28 +112,28 @@ diff --git a/arch/arm/dts/rk3399-tn3399-v3.dts b/arch/arm/dts/rk3399-tn3399-v3.d
 new file mode 100644
 --- /dev/null
 +++ b/arch/arm/dts/rk3399-tn3399-v3.dts
-@@ -0,0 +1,737 @@
+@@ -0,0 +1,819 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/dts-v1/;
 +/*
-+ * Copyright (c) 2019 Akash Gajjar <Akash_Gajjar@mentor.com>
-+ * Copyright (c) 2019 Pragnesh Patel <Pragnesh_Patel@mentor.com>
++ * dts from https://github.com/retro98boy/linux-tn3399_v3
 + */
 +
-+/dts-v1/;
 +#include <dt-bindings/input/linux-event-codes.h>
 +#include <dt-bindings/leds/common.h>
 +#include <dt-bindings/pwm/pwm.h>
 +#include "rk3399.dtsi"
 +#include "rk3399-opp.dtsi"
++// #include "rk3399-t-opp.dtsi"
 +
 +/ {
 +	model = "TN3399_V3 Board";
 +	compatible = "rockchip,tn3399_v3", "rockchip,rk3399";
 +
 +	aliases {
-+		mmc0 = &sdmmc;
-+		mmc1 = &sdhci;
-+		mmc2 = &sdio0;
++		mmc0 = &sdio0;
++		mmc1 = &sdmmc;
++		mmc2 = &sdhci;
 +	};
 +
 +	chosen {
@@ -152,10 +152,14 @@ new file mode 100644
 +		pinctrl-names = "default";
 +		pinctrl-0 = <&sys_led_pin>;
 +
++		// green: system
++		// red: power
++		// blue: wwan
 +		sys_led: led-0 {
++			label = "green:sys";
 +			function = LED_FUNCTION_STATUS;
 +			color = <LED_COLOR_ID_GREEN>;
-+			gpios = <&gpio1 RK_PC2 GPIO_ACTIVE_LOW>;
++			gpios = <&gpio1 RK_PC2 GPIO_ACTIVE_LOW>; // verify
 +			linux,default-trigger = "heartbeat";
 +		};
 +	};
@@ -166,10 +170,10 @@ new file mode 100644
 +		clock-names = "ext_clock";
 +		pinctrl-names = "default";
 +		pinctrl-0 = <&wifi_enable_h>;
-+		reset-gpios = <&gpio0 RK_PB2 GPIO_ACTIVE_LOW>;
++		reset-gpios = <&gpio0 RK_PB2 GPIO_ACTIVE_LOW>; // sch
 +	};
 +
-+	vcc12v_dcin: vcc12v-dcin {
++	vcc12v_dcin: vcc12v-dcin { // checked
 +		compatible = "regulator-fixed";
 +		regulator-name = "vcc12v_dcin";
 +		regulator-always-on;
@@ -178,7 +182,7 @@ new file mode 100644
 +		regulator-max-microvolt = <12000000>;
 +	};
 +
-+	vcc5v0_sys: vcc5v0-sys {
++	vcc5v0_sys: vcc5v0-sys { // checked
 +		compatible = "regulator-fixed";
 +		regulator-name = "vcc5v0_sys";
 +		regulator-always-on;
@@ -191,7 +195,7 @@ new file mode 100644
 +	vcc5v0_host: vcc5v0-host {
 +		compatible = "regulator-fixed";
 +		enable-active-high;
-+		gpio = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
++		gpio = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>; // sch
 +		pinctrl-names = "default";
 +		pinctrl-0 = <&vcc5v0_host_en>;
 +		regulator-name = "vcc5v0_host";
@@ -200,7 +204,7 @@ new file mode 100644
 +		vin-supply = <&vcc5v0_sys>;
 +	};
 +
-+	vcc3v3_sys: vcc3v3-sys {
++	vcc3v3_sys: vcc3v3-sys { // checked
 +		compatible = "regulator-fixed";
 +		regulator-name = "vcc3v3_sys";
 +		regulator-always-on;
@@ -213,12 +217,24 @@ new file mode 100644
 +	vcc3v0_sd: vcc3v0-sd {
 +		compatible = "regulator-fixed";
 +		enable-active-high;
-+		gpio = <&gpio0 RK_PA1 GPIO_ACTIVE_HIGH>;
++		gpio = <&gpio0 RK_PA1 GPIO_ACTIVE_HIGH>; // sch
 +		pinctrl-names = "default";
 +		pinctrl-0 = <&vcc3v0_sd_en>;
 +		regulator-name = "vcc3v0_sd";
 +		regulator-always-on;
 +		vin-supply = <&vcc3v3_sys>;
++	};
++
++	// 4G Module
++	vcc3v6_lte: vcc3v3-lte {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio = <&gpio2 RK_PA2 GPIO_ACTIVE_HIGH>; // sch
++		pinctrl-names = "default";
++		pinctrl-0 = <&vcc3v6_lte_en>;
++		regulator-name = "vcc3v6_lte";
++		// regulator-always-on;
++		vin-supply = <&vcc12v_dcin>;
 +	};
 +
 +	vcca1v8_s3: vcca1v8-s3 {
@@ -241,7 +257,7 @@ new file mode 100644
 +		vin-supply = <&vcc_1v8>;
 +	};
 +
-+	vcc_0v9: vcc-0v9 {
++	vcc_0v9: vcc-0v9 { // checked
 +		compatible = "regulator-fixed";
 +		regulator-name = "vcc_0v9";
 +		regulator-always-on;
@@ -261,7 +277,7 @@ new file mode 100644
 +		vin-supply = <&vcc3v3_sys>;
 +	};
 +
-+	vdd_log: vdd-log {
++	vdd_log: vdd-log { // checked
 +		compatible = "pwm-regulator";
 +		pwms = <&pwm2 0 25000 1>;
 +		pwm-supply = <&vcc3v3_sys>;
@@ -270,6 +286,14 @@ new file mode 100644
 +		regulator-boot-on;
 +		regulator-min-microvolt = <800000>;
 +		regulator-max-microvolt = <1400000>;
++	};
++
++	fan0: gpio-fan { // verify DC_12V
++		#cooling-cells = <2>;
++		compatible = "gpio-fan";
++		gpio-fan,speed-map = <0 0 3000 1>;
++		gpios = <&gpio1 RK_PB5 GPIO_ACTIVE_HIGH>;
++		status = "okay";
 +	};
 +};
 +
@@ -297,6 +321,23 @@ new file mode 100644
 +	cpu-supply = <&vdd_cpu_b>;
 +};
 +
++&cpu_thermal { // verify
++	trips {
++		cpu_hot: cpu_hot {
++			hysteresis = <10000>;
++			temperature = <55000>;
++			type = "active";
++		};
++	};
++
++	cooling-maps {
++		map2 {
++			cooling-device = <&fan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++			trip = <&cpu_hot>;
++		};
++	};
++};
++
 +&emmc_phy {
 +	status = "okay";
 +};
@@ -311,7 +352,7 @@ new file mode 100644
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&rgmii_pins>;
 +	pinctrl-1 = <&rgmii_sleep_pins>;
-+	snps,reset-gpio = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
++	snps,reset-gpio = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>; // sch
 +	snps,reset-active-low;
 +	snps,reset-delays-us = <0 10000 50000>;
 +	tx_delay = <0x28>;
@@ -342,7 +383,7 @@ new file mode 100644
 +	i2c-scl-rising-time-ns = <168>;
 +	i2c-scl-falling-time-ns = <4>;
 +
-+	rk808: pmic@1b {
++	rk808: pmic@1b { // checked
 +		compatible = "rockchip,rk808";
 +		reg = <0x1b>;
 +		interrupt-parent = <&gpio1>;
@@ -565,18 +606,35 @@ new file mode 100644
 +	};
 +};
 +
++
++// ALC5640
 +&i2c1 {
++	i2c-scl-rising-time-ns = <300>;
++	i2c-scl-falling-time-ns = <15>;
 +	status = "okay";
 +};
 +
++// Touch screen
 +&i2c2 {
++	i2c-scl-rising-time-ns = <300>;
++	i2c-scl-falling-time-ns = <15>;
 +	status = "okay";
++
++	hym8563: rtc@51 {
++		compatible = "haoyu,hym8563";
++		reg = <0x51>;
++		#clock-cells = <0>;
++		clock-output-names = "xin32k";
++		/* rtc_int is connected to STM8 */
++	};
 +};
 +
++// HDMI
 +&i2c3 {
 +	status = "okay";
 +};
 +
++// TC358749
 +&i2c4 {
 +	status = "okay";
 +};
@@ -613,63 +671,81 @@ new file mode 100644
 +&pinctrl {
 +	leds {
 +		sys_led_pin: sys-led-pin {
-+			rockchip,pins = <1 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>;
++			rockchip,pins = <1 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>; // sch
 +		};
 +	};
 +
 +	bt {
 +		bt_enable_h: bt-enable-h {
-+			rockchip,pins = <0 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>;
++			rockchip,pins = <0 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>; // sch
 +		};
 +
 +		bt_host_wake_l: bt-host-wake-l {
-+			rockchip,pins = <0 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>;
++			rockchip,pins = <0 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>; // sch
 +		};
 +
 +		bt_wake_l: bt-wake-l {
-+			rockchip,pins = <2 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
++			rockchip,pins = <2 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>; // sch
 +		};
 +	};
 +
 +	wifi {
 +		wifi_enable_h: wifi-enable-h {
-+			rockchip,pins = <0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
++			rockchip,pins = <0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>; // sch
 +		};
 +
 +		wifi_host_wake_l: wifi-host-wake-l {
-+			rockchip,pins = <0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
++			rockchip,pins = <0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>; // sch
 +		};
 +	};
 +
 +	usb2 {
 +		vcc5v0_host_en: vcc5v0-host-en {
-+			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
++			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>; // sch
 +		};
 +	};
 +
 +	sdmmc {
 +		vcc3v0_sd_en: vcc3v0-sd-en {
-+			rockchip,pins =<0 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
++			rockchip,pins =<0 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>; // sch
 +		};
 +	};
 +
 +	pmic {
 +		pmic_int_l: pmic-int-l {
-+			rockchip,pins = <1 RK_PC5 RK_FUNC_GPIO &pcfg_pull_up>;
++			rockchip,pins = <1 RK_PC5 RK_FUNC_GPIO &pcfg_pull_up>; // sch
 +		};
 +
 +		vsel1_pin: vsel1-pin {
-+			rockchip,pins = <1 RK_PC1 RK_FUNC_GPIO &pcfg_pull_down>;
++			rockchip,pins = <1 RK_PC1 RK_FUNC_GPIO &pcfg_pull_down>; // sch
 +		};
 +
 +		vsel2_pin: vsel2-pin {
-+			rockchip,pins = <1 RK_PB6 RK_FUNC_GPIO &pcfg_pull_down>;
++			rockchip,pins = <1 RK_PB6 RK_FUNC_GPIO &pcfg_pull_down>; // sch
++		};
++	};
++
++	lte {
++		vcc3v6_lte_en: vcc3v6-lte-en {
++			rockchip,pins = <2 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>; // sch
++		};
++		lte_reset: lte-reset {
++			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>; // sch
++		};
++		lte_wakeup_in: lte-wakeup-in {
++			rockchip,pins = <1 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>; // sch
++		};
++		lte_wakeup_out: lte-wakeup-out {
++			rockchip,pins = <1 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>; // sch
++		};
++		lte_disable_e: lte-disable-e {
++			rockchip,pins = <1 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>; // sch
 +		};
 +	};
 +
 +	gmac {
 +		rgmii_sleep_pins: rgmii-sleep-pins {
-+			rockchip,pins =<3 RK_PB7 RK_FUNC_GPIO &pcfg_output_low>;
++			rockchip,pins =<3 RK_PB7 RK_FUNC_GPIO &pcfg_output_low>; // sch
 +		};
 +	};
 +};
@@ -713,7 +789,7 @@ new file mode 100644
 +		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
 +		interrupt-names = "host-wake";
 +		pinctrl-names = "default";
-+		pinctrl-0 = <&wifi_host_wake_l>;
++		pinctrl-0 = <&wifi_host_wake_l>; // sch
 +	};
 +};
 +
@@ -722,8 +798,9 @@ new file mode 100644
 +	bus-width = <4>;
 +	cap-mmc-highspeed;
 +	cap-sd-highspeed;
-+	cd-gpios = <&gpio0 RK_PA7 GPIO_ACTIVE_LOW>;
++	cd-gpios = <&gpio0 RK_PA7 GPIO_ACTIVE_LOW>; // sch
 +	disable-wp;
++	sd-uhs-sdr104;
 +	max-frequency = <150000000>;
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&sdmmc_clk &sdmmc_cd &sdmmc_cmd &sdmmc_bus4>;
@@ -784,18 +861,23 @@ new file mode 100644
 +		compatible = "brcm,bcm4345c5";
 +		clocks = <&rk808 1>;
 +		clock-names = "ext_clock";
-+		device-wakeup-gpios = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>;
-+		host-wakeup-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
-+		shutdown-gpios = <&gpio0 RK_PB1 GPIO_ACTIVE_HIGH>;
++		device-wakeup-gpios = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>; // sch
++		host-wakeup-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>; // sch
++		shutdown-gpios = <&gpio0 RK_PB1 GPIO_ACTIVE_HIGH>; // sch
 +		max-speed = <1500000>;
 +		pinctrl-names = "default";
 +		pinctrl-0 = <&bt_host_wake_l &bt_wake_l &bt_enable_h>;
 +	};
 +};
 +
++// Debug TTL
 +&uart2 {
 +	status = "okay";
 +};
++
++// &uart4 {
++// 	status = "okay";
++// };
 +
 +&usb_host0_ehci {
 +	status = "okay";

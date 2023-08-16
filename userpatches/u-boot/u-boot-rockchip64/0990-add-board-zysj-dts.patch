@@ -112,7 +112,7 @@ diff --git a/arch/arm/dts/rk3399-zysj.dts b/arch/arm/dts/rk3399-zysj.dts
 new file mode 100644
 --- /dev/null
 +++ b/arch/arm/dts/rk3399-zysj.dts
-@@ -0,0 +1,1188 @@
+@@ -0,0 +1,1187 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/dts-v1/;
 +
@@ -121,8 +121,6 @@ new file mode 100644
 +#include <dt-bindings/usb/pd.h>
 +#include "rk3399.dtsi"
 +#include "rk3399-opp.dtsi"
-+// 降频opp
-+// #include "rk3399-t-opp.dtsi"
 +
 +/ {
 +	model = "ZYSJ RK3399";
@@ -506,8 +504,8 @@ new file mode 100644
 +		#clock-cells = <1>;
 +		clock-output-names = "xin32k", "rk808-clkout2"; // bsp
 +		pinctrl-names = "default";
-+		// pinctrl-0 = <&pmic_int_l &pmic_dvs2>;
-+		pinctrl-0 = <&pmic_int_l>;
++		pinctrl-0 = <&pmic_int_l &pmic_dvs2>;
++		// pinctrl-0 = <&pmic_int_l>;
 +		rockchip,system-power-controller;
 +		wakeup-source;
 +
@@ -1153,6 +1151,7 @@ new file mode 100644
 +	cd-gpios = <&gpio0 RK_PA7 GPIO_ACTIVE_LOW>; // bsp
 +	clock-frequency = <150000000>;
 +	disable-wp;
++	sd-uhs-sdr104;
 +	max-frequency = <150000000>;
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd &sdmmc_bus4>;

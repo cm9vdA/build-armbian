@@ -2,7 +2,7 @@ diff --git a/arch/arm64/boot/dts/rockchip/rk3399-eaidk-610.dts b/arch/arm64/boot
 new file mode 100644
 --- /dev/null
 +++ b/arch/arm64/boot/dts/rockchip/rk3399-eaidk-610.dts
-@@ -0,0 +1,974 @@
+@@ -0,0 +1,913 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright (c) 2022 Fuzhou Rockchip Electronics Co., Ltd.
@@ -597,49 +597,11 @@ new file mode 100644
 +		compatible = "fcs,fusb302";
 +		reg = <0x22>;
 +		interrupt-parent = <&gpio1>;
-+		interrupts = <RK_PA2 IRQ_TYPE_LEVEL_LOW>;
++		interrupts = <RK_PA2 IRQ_TYPE_LEVEL_LOW>; // bsp
 +		pinctrl-names = "default";
 +		pinctrl-0 = <&fusb0_int>;
 +		vbus-supply = <&vcc5v0_typec>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				usbc0_role_sw: endpoint@0 {
-+					remote-endpoint = <&dwc3_0_role_switch>;
-+				};
-+			};
-+		};
-+
-+		connector {
-+			compatible = "usb-c-connector";
-+			data-role = "dual";
-+			label = "USB-C";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+
-+					usbc_hs: endpoint {
-+						remote-endpoint = <&u2phy0_typec_hs>;
-+					};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+
-+					usbc_ss: endpoint {
-+						remote-endpoint = <&tcphy0_typec_ss>;
-+					};
-+				};
-+			};
-+		};
++		status = "okay";
 +	};
 +};
 +
@@ -826,6 +788,7 @@ new file mode 100644
 +	cap-sd-highspeed;
 +	cd-gpios = <&gpio0 RK_PA7 GPIO_ACTIVE_LOW>;
 +	disable-wp;
++	sd-uhs-sdr104;
 +	max-frequency = <150000000>;
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_bus4>;
@@ -840,15 +803,6 @@ new file mode 100644
 +
 +&tcphy0 {
 +	status = "okay";
-+};
-+
-+&tcphy0_usb3 {
-+	orientation-switch;
-+	port {
-+		tcphy0_typec_ss: endpoint {
-+			remote-endpoint = <&usbc_ss>;
-+		};
-+	};
 +};
 +
 +&tcphy1 {
@@ -873,12 +827,6 @@ new file mode 100644
 +	u2phy0_host: host-port {
 +		phy-supply = <&vcc5v0_host3>;
 +		status = "okay";
-+	};
-+
-+	port {
-+		u2phy0_typec_hs: endpoint {
-+			remote-endpoint = <&usbc_hs>;
-+		};
 +	};
 +};
 +
@@ -941,16 +889,7 @@ new file mode 100644
 +
 +&usbdrd_dwc3_0 {
 +	status = "okay";
-+	usb-role-switch;
-+
-+	port {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		dwc3_0_role_switch: endpoint@0 {
-+			reg = <0>;
-+			remote-endpoint = <&usbc0_role_sw>;
-+		};
-+	};
++	dr_mode = "host";
 +};
 +
 +&usbdrd3_1 {

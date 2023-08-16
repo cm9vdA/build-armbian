@@ -113,7 +113,7 @@ diff --git a/arch/arm/dts/rk3399-dg3399.dts b/arch/arm/dts/rk3399-dg3399.dts
 new file mode 100644
 --- /dev/null
 +++ b/arch/arm/dts/rk3399-dg3399.dts
-@@ -0,0 +1,981 @@
+@@ -0,0 +1,1026 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/dts-v1/;
 +
@@ -124,6 +124,7 @@ new file mode 100644
 +#include "dt-bindings/usb/pd.h"
 +#include "rk3399.dtsi"
 +#include "rk3399-opp.dtsi"
++// #include "rk3399-t-opp.dtsi"
 +
 +/ {
 +	model = "DG-3399";
@@ -290,6 +291,18 @@ new file mode 100644
 +		regulator-name = "gsm_power_en";
 +		regulator-always-on;
 +	};
++
++	vcc3v3_pcie: vcc3v3-pcie-regulator {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio = <&gpio3 RK_PD6 GPIO_ACTIVE_HIGH>; // verify
++		pinctrl-names = "default";
++		pinctrl-0 = <&pcie_pwr_en>;
++		regulator-name = "vcc3v3_pcie";
++		regulator-always-on;
++		regulator-boot-on;
++		vin-supply = <&vcc12v_dcin>;
++	};
 +/*
 +	watchdog: watchdog-en {
 +		compatible = "regulator-fixed";
@@ -358,6 +371,12 @@ new file mode 100644
 +		enable-gpios = <&gpio4 RK_PC5 GPIO_ACTIVE_HIGH>; // bsp
 +		sound-name-prefix = "Speaker Amplifier";
 +		vcc-supply = <&vcc5v0_sys>;
++	};
++*/
++/*
++	lcd_bl: lcd-bl {
++			compatible = "gpio-backlight";
++			gpios = <&gpio 44 GPIO_ACTIVE_HIGH>;
 +	};
 +*/
 +};
@@ -673,6 +692,7 @@ new file mode 100644
 +	status = "okay";
 +};
 +
++// TP I2C
 +&i2c4 {
 +	i2c-scl-rising-time-ns = <600>;
 +	i2c-scl-falling-time-ns = <20>;
@@ -745,21 +765,21 @@ new file mode 100644
 +	sdmmc-supply = <&vcc_sd>; // bsp
 +	gpio1830-supply = <&vcc_3v0>; // bsp
 +};
-+
++/*
++// not work
 +&pcie0 {
-+	ep-gpios = <&gpio2 RK_PD4 GPIO_ACTIVE_HIGH>; // ??
-+	num-lanes = <4>;
++	ep-gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&pcie_perst>;
 +	vpcie12v-supply = <&vcc12v_dcin>;
-+	// vpcie3v3-supply = <&vcc3v3_pcie>;
++	vpcie3v3-supply = <&vcc3v3_pcie>;
 +	status = "okay";
 +};
 +
 +&pcie_phy {
 +	status = "okay";
 +};
-+
++*/
 +&pmu_io_domains {
 +	pmu1830-supply = <&vcc_3v0>; // bsp
 +	status = "okay";
@@ -806,11 +826,11 @@ new file mode 100644
 +
 +	pcie {
 +		pcie_perst: pcie-perst {
-+			rockchip,pins = <2 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
++			rockchip,pins = <0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>; // verify
 +		};
 +
 +		pcie_pwr_en: pcie-pwr-en {
-+			rockchip,pins = <1 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
++			rockchip,pins = <3 RK_PD6 RK_FUNC_GPIO &pcfg_pull_none>; // verify
 +		};
 +	};
 +
@@ -908,9 +928,18 @@ new file mode 100644
 +		gdm_disable_pin: gdm-disable-pin {
 +			rockchip,pins = <0 RK_PA2 RK_FUNC_GPIO &pcfg_pull_down>; // bsp
 +		};
-+		gsm_sim_det: gsm_sim_det {
++		gsm_sim_det: gsm-sim-det {
 +			rockchip,pins = <1 RK_PC7 RK_FUNC_GPIO &pcfg_pull_down>; // bsp
 +		};
++		gpio_a0_pin: gpio-a0-pin {
++			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++		// tp_rst_pin: tp-rst-pin {
++		// 	rockchip,pins = <4 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
++		// };
++		// tp_int_pin: tp-int-pin {
++		// 	rockchip,pins = <1 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
++		// };
 +	};
 +
 +	gmac {
@@ -965,6 +994,7 @@ new file mode 100644
 +	cap-sd-highspeed;
 +	cd-gpios = <&gpio0 RK_PA7 GPIO_ACTIVE_LOW>; // bsp
 +	disable-wp;
++	sd-uhs-sdr104;
 +	max-frequency = <150000000>;
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd &sdmmc_bus4>;
@@ -1044,6 +1074,21 @@ new file mode 100644
 +
 +&uart2 {
 +	status = "okay";
++};
++
++// near MIC
++&spi1 {
++	status = "disabled";
++	display@0 {
++			compatible = "jianda,jd-t18003-t01", "sitronix,st7735r";
++			reg = <0>;
++			pinctrl-names = "default";
++			spi-max-frequency = <32000000>;
++			dc-gpios = <&gpio1 RK_PC4 GPIO_ACTIVE_HIGH>;
++			reset-gpios = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
++			rotation = <270>;
++			// backlight = <&lcd_bl>;
++	};
 +};
 +
 +&usb_host0_ehci {
