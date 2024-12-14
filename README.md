@@ -1,3 +1,7 @@
+# 本仓库已停止更新，不再维护
+
+
+
 # 编译步骤：
 1. 你需要一个已经安装Docker的Linux系统环境
 2. 克隆Armbian官方仓库到本地，地址：https://github.com/armbian/build
