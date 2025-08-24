@@ -3,7 +3,7 @@
 set -e
 WORKSPACE=$(dirname $(readlink -f $0))
 
-BOARD_LIST=(all tn3399-v3 zcube1-max dg3399 nanopct4 tpm312)
+BOARD_LIST=(all nanopct4)
 
 # default value
 BOARD=$1
